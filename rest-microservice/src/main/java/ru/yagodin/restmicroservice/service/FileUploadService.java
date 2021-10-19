@@ -2,14 +2,15 @@ package ru.yagodin.restmicroservice.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import ru.yagodin.restmicroservice.dto.FileDTO;
 
+import java.io.File;
 import java.util.List;
 
 @Service
@@ -37,8 +38,29 @@ public class FileUploadService {
 
     }
 
-    public List<FileDTO> getAll() {
-        //todo
-        return null;
+    public String getAll() {
+        ResponseEntity<List<File>> result
+                = restTemplate.exchange(
+                MIDDLEWARE_URI + "/file",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<>() {
+                });
+
+
+        if (result.getStatusCode() == HttpStatus.OK && result.getBody() != null) {
+            final StringBuilder sb = new StringBuilder();
+            sb.setLength(0);
+            List<File> body = result.getBody();
+            body.forEach(f -> sb
+                    .append(f.getName())
+                    .append("\n")
+                    .append(f.length())
+                    .append("\n")
+                    .append(f.isFile())
+                    .append("\n"));
+            return sb.toString();
+        }
+        return "";
     }
 }

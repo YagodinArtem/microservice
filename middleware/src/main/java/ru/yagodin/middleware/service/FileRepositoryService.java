@@ -1,12 +1,17 @@
 package ru.yagodin.middleware.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.yagodin.middleware.entity.FileEntity;
 import ru.yagodin.middleware.repository.FileRepository;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Service
@@ -26,9 +31,20 @@ public class FileRepositoryService {
         return file.getName() + " " + file.getSize() + " " + "Successfully stored";
     }
 
-    public List<FileEntity> findAllFiles() {
-        //todo
-        return null;
+    public List<File> findAllFiles() {
+        List<FileEntity> allFiles = fileRepository.findAll();
+        for (FileEntity entity : allFiles) {
+
+            try (FileOutputStream fos = new FileOutputStream("temp/" + entity.getDescription())) {
+                fos.write(entity.getFile());
+                fos.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        File folder = new File("temp");
+        assert folder.listFiles() != null;
+        return List.of(folder.listFiles());
     }
 
 }

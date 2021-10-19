@@ -27,7 +27,7 @@ public class FileUploadController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.FOUND)
-    public List<FileDTO> getAll() {
+    public String getAll() {
         return fileUploadService.getAll();
     }
 

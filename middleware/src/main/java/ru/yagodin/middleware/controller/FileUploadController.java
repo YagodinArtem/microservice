@@ -6,9 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.yagodin.middleware.entity.FileEntity;
 import ru.yagodin.middleware.service.FileRepositoryService;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -26,8 +26,7 @@ public class FileUploadController {
     }
 
     @GetMapping
-    public List<FileEntity> findAll() {
-        //todo
+    public List<File> findAll() {
        return fileRepositoryService.findAllFiles();
     }
 }
