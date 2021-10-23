@@ -1,7 +1,6 @@
 package ru.yagodin.middleware.service;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.yagodin.middleware.entity.FileEntity;
