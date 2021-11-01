@@ -11,7 +11,7 @@ import ru.yagodin.restmicroservice.dto.ItemDTO;
 
 @Service
 @RequiredArgsConstructor
-public class MiddlewareService {
+public class ItemServiceMiddleware {
 
     private final RestTemplate restTemplate;
 

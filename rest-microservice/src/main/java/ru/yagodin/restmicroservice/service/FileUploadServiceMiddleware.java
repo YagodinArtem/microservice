@@ -1,6 +1,7 @@
 package ru.yagodin.restmicroservice.service;
 
 
+import com.google.common.io.Files;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -11,11 +12,21 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FileUploadService {
+public class FileUploadServiceMiddleware {
+
+    private static final File tempDir;
+
+    static {
+        tempDir = new File(System.getProperty("user.home") + "/Desktop" + "/temp");
+        if (!tempDir.exists()) {
+            var mkdir = tempDir.mkdir();
+        }
+    }
 
     private final RestTemplate restTemplate;
 
@@ -52,13 +63,21 @@ public class FileUploadService {
             final StringBuilder sb = new StringBuilder();
             sb.setLength(0);
             List<File> body = result.getBody();
-            body.forEach(f -> sb
-                    .append(f.getName())
-                    .append("\n")
-                    .append(f.length())
-                    .append("\n")
-                    .append(f.isFile())
-                    .append("\n"));
+            body.forEach(f -> {
+                sb
+                        .append(f.getName())
+                        .append(" ")
+                        .append(f.length())
+                        .append(" ")
+                        .append(f.isFile())
+                        .append(" ")
+                        .append("\n");
+                try {
+                    Files.copy(f, new File(tempDir + "/" + f.getName()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
             return sb.toString();
         }
         return "";
